@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="vi" data-required-role="admin,staff">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Hệ Thống Quản Lý Quán Cafe</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* ========== DASHBOARD LAYOUT ========== */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ========== STAT CARDS ========== */
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid #E5E7EB;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: #8B4513;
+        }
+
+        .stat-card.warning::before {
+            background: #F59E0B;
+        }
+
+        .stat-card.danger::before {
+            background: #EF4444;
+        }
+
+        .stat-card.info::before {
+            background: #3B82F6;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+            transform: translateY(-6px);
+            border-color: #8B4513;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .stat-icon {
+            font-size: 36px;
+        }
+
+        .stat-trend {
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            background: #DEB887;
+            color: #5C3D2E;
+            font-weight: 700;
+        }
+
+        .stat-trend.down {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1F2937;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .stat-compare {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        /* ========== QUICK ACTIONS ========== */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 18px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.25);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.35);
+        }
+
+        .action-btn span:first-child {
+            font-size: 24px;
+        }
+
+        /* ========== CONTENT SECTIONS ========== */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card-section {
+            background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid #E5E7EB;
+            transition: all 0.3s ease;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 18px;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1F2937;
+            letter-spacing: -0.3px;
+        }
+
+        .card-more {
+            color: #8B4513;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .card-more:hover {
+            color: #A0522D;
+            text-decoration: underline;
+        }
+
+        /* ========== TABLES ========== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table thead {
+            background: #F9FAFB;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #E5E7EB;
+            font-size: 13px;
+            color: #4B5563;
+        }
+
+        table tbody tr:hover {
+            background: #F9FAFB;
+        }
+
+        /* ========== BADGES ========== */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-success {
+            background: #DEB887;
+            color: #5C3D2E;
+        }
+
+        .badge-warning {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .badge-danger {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .badge-info {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        /* ========== STATS BOX ========== */
+        .mini-stat {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #F9FAFB;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .mini-stat-icon {
+            font-size: 24px;
+        }
+
+        .mini-stat-info {
+            flex: 1;
+        }
+
+        .mini-stat-label {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 2px;
+        }
+
+        .mini-stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6B7280;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        /* ========== SPINNER ========== */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #E5E7EB;
+            border-radius: 50%;
+            border-top-color: #8B4513;
+            animation: spinning 1s linear infinite;
+        }
+
+        @keyframes spinning {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== PAGE HEADER ========== */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1F2937;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-refresh {
+            background: white;
+            border: 2px solid #E5E7EB;
+            color: #1F2937;
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-refresh:hover {
+            border-color: #8B4513;
+            color: white;
+            background: #8B4513;
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img src="../images/Ảnh chụp màn hình 2026-04-17 105503.png" alt="HDTQ Coffee" class="navbar-logo-img">
+            <span>COFFEE HDTQ</span>
+        </div>
+        <div class="navbar-menu">
+            <li><a href="dashboard.html" class="active">Trang Chủ</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="order.html">Đơn Hàng</a></li>
+            <li data-for-role="admin"><a href="employees.html">Nhân Viên</a></li>
+            <li data-for-role="admin"><a href="reports.html">Báo Cáo</a></li>
+        </div>
+        <div class="navbar-right">
+            <div class="navbar-user">
+                <span id="user-name">User</span>
+                <div class="user-avatar" id="user-avatar">U</div>
+            </div>
+            <a href="#" id="logout-btn">Đăng Xuất</a>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html" class="active">📄 Trang Chủ</a></li>
+            <li><a href="menu.html">🍽️ Menu</a></li>
+            <li><a href="order.html">📦 Đơn Hàng</a></li>
+            <li data-for-role="admin"><a href="employees.html">👥 Nhân Viên</a></li>
+            <li data-for-role="admin"><a href="reports.html">📈 Báo Cáo</a></li>
+            <li data-for-role="admin"><a href="settings.html">⚙️ Cài Đặt</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- PAGE HEADER -->
+        <div class="page-header">
+            <h1 class="page-title">📊 Trang Chủ</h1>
+            <div class="page-actions">
+                <button class="btn-refresh" onclick="location.reload()">🔄 Làm mới</button>
+            </div>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="quick-actions">
+            <a href="order.html" class="action-btn">
+                <span>📦</span>
+                <span>Đơn Hàng</span>
+            </a>
+            <a href="menu.html" class="action-btn">
+                <span>☕</span>
+                <span>Thực Đơn</span>
+            </a>
+            <a href="#" class="action-btn">
+                <span>📦</span>
+                <span>Kho</span>
+            </a>
+            <a href="employees.html" class="action-btn">
+                <span>👥</span>
+                <span>Nhân Viên</span>
+            </a>
+        </div>
+
+        <!-- STAT CARDS -->
+        <div class="dashboard-container">
+            <!-- Total Revenue -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">💰</div>
+                    <span class="stat-trend">+12.5%</span>
+                </div>
+                <div class="stat-label">Doanh Thu Hôm Nay</div>
+                <div class="stat-value" id="revenue">25.5M</div>
+                <div class="stat-compare">So với hôm qua: +2.3M</div>
+            </div>
+
+            <!-- Total Orders -->
+            <div class="stat-card warning">
+                <div class="stat-header">
+                    <div class="stat-icon">📋</div>
+                    <span class="stat-trend down">-5.2%</span>
+                </div>
+                <div class="stat-label">Đơn Hàng Hôm Nay</div>
+                <div class="stat-value" id="orders">184</div>
+                <div class="stat-compare">Trung bình: 150 đơn</div>
+            </div>
+
+            <!-- Active Customers -->
+            <div class="stat-card info">
+                <div class="stat-header">
+                    <div class="stat-icon">👥</div>
+                    <span class="stat-trend">+8.1%</span>
+                </div>
+                <div class="stat-label">Khách Hôm Nay</div>
+                <div class="stat-value" id="customers">245</div>
+                <div class="stat-compare">Khách mới: 28</div>
+            </div>
+
+            <!-- Popular Product -->
+            <div class="stat-card danger">
+                <div class="stat-header">
+                    <div class="stat-icon">⭐</div>
+                    <span class="stat-trend">+3.2%</span>
+                </div>
+                <div class="stat-label">Sản Phẩm Bán Chạy</div>
+                <div class="stat-value" id="topProduct">Espresso</div>
+                <div class="stat-compare">Bán được: 45 ly</div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT GRID -->
+        <div class="content-grid">
+            <!-- LEFT: RECENT ORDERS -->
+            <div class="card-section">
+                <div class="card-header">
+                    <div class="card-title">📦 Đơn Hàng Gần Đây</div>
+                    <a href="order.html" class="card-more">Xem tất cả →</a>
+                </div>
+                <table id="recent-orders-table">
+                    <thead>
+                        <tr>
+                            <th>Mã ĐH</th>
+                            <th>Khách</th>
+                            <th>Trạng Thái</th>
+                            <th>Giá</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 30px;"><div class="spinner"></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- RIGHT: STATS SIDEBAR -->
+            <div class="card-section">
+                <div class="card-header">
+                    <div class="card-title">📈 Thống Kê Nhanh</div>
+                </div>
+                
+                <!-- Mini Stats -->
+                <div class="mini-stat">
+                    <div class="mini-stat-icon">☕</div>
+                    <div class="mini-stat-info">
+                        <div class="mini-stat-label">Cà Phê Được Bán</div>
+                        <div class="mini-stat-value">156</div>
+                    </div>
+                </div>
+
+                <div class="mini-stat">
+                    <div class="mini-stat-icon">🍰</div>
+                    <div class="mini-stat-info">
+                        <div class="mini-stat-label">Bánh / Ăn Vặt</div>
+                        <div class="mini-stat-value">82</div>
+                    </div>
+                </div>
+
+                <div class="mini-stat">
+                    <div class="mini-stat-icon">🧋</div>
+                    <div class="mini-stat-info">
+                        <div class="mini-stat-label">Đồ Uống Khác</div>
+                        <div class="mini-stat-value">64</div>
+                    </div>
+                </div>
+
+                <div class="mini-stat">
+                    <div class="mini-stat-icon">🏪</div>
+                    <div class="mini-stat-info">
+                        <div class="mini-stat-label">Ghế Trống</div>
+                        <div class="mini-stat-value">12/25</div>
+                    </div>
+                </div>
+
+                <hr style="margin: 20px 0; border: 1px solid #E5E7EB;">
+
+                <div class="mini-stat">
+                    <div class="mini-stat-icon">⏰</div>
+                    <div class="mini-stat-info">
+                        <div class="mini-stat-label">Giờ Cao Điểm</div>
+                        <div class="mini-stat-value">11:00 - 13:00</div>
+                    </div>
+                </div>
+
+                <div class="mini-stat">
+                    <div class="mini-stat-icon">👔</div>
+                    <div class="mini-stat-info">
+                        <div class="mini-stat-label">Nhân Viên Hôm Nay</div>
+                        <div class="mini-stat-value">8/10 (80%)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOP PRODUCTS SECTION -->
+        <div class="card-section">
+            <div class="card-header">
+                <div class="card-title">⭐ Sản Phẩm Bán Chạy Nhất</div>
+                <a href="menu.html" class="card-more">Xem Menu →</a>
+            </div>
+            <table id="top-products-table">
+                <thead>
+                    <tr>
+                        <th>Sản Phẩm</th>
+                        <th>Loại</th>
+                        <th>Đã Bán</th>
+                        <th>Doanh Thu</th>
+                        <th>Mức Tồn</th>
+                        <th>Trạng Thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 30px;"><div class="spinner"></div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+
+    <script>
+        // Mock data for demo
+        const MOCK_ORDERS = [
+            { order_id: 1, customer_name: 'Nguyễn Văn A', table_number: 1, order_date: new Date().toISOString(), final_amount: 125000, status: 'completed' },
+            { order_id: 2, customer_name: 'Trần Thị B', table_number: 2, order_date: new Date(Date.now() - 1800000).toISOString(), final_amount: 89000, status: 'pending' },
+            { order_id: 3, customer_name: 'Lê Văn C', table_number: 3, order_date: new Date(Date.now() - 3600000).toISOString(), final_amount: 156000, status: 'completed' },
+            { order_id: 4, customer_name: 'Phạm Thị D', table_number: 4, order_date: new Date(Date.now() - 5400000).toISOString(), final_amount: 98000, status: 'completed' },
+            { order_id: 5, customer_name: 'Vũ Văn E', table_number: 5, order_date: new Date(Date.now() - 7200000).toISOString(), final_amount: 212000, status: 'completed' }
+        ];
+
+        const MOCK_PRODUCTS = [
+            { product_name: '☕ Espresso', category_name: 'Cà Phê', sold_count: 156, total_revenue: 4680000, inventory: 240, max_inventory: 300, status: 'success' },
+            { product_name: '🧋 Iced Cappuccino', category_name: 'Cà Phê', sold_count: 142, total_revenue: 4990000, inventory: 189, max_inventory: 250, status: 'success' },
+            { product_name: '🥐 Croissant Bơ', category_name: 'Bánh/Ăn Vặt', sold_count: 98, total_revenue: 1960000, inventory: 45, max_inventory: 100, status: 'warning' },
+            { product_name: '🍰 Cheesecake', category_name: 'Bánh/Ăn Vặt', sold_count: 76, total_revenue: 1900000, inventory: 55, max_inventory: 100, status: 'success' },
+            { product_name: '🍓 Strawberry Juice', category_name: 'Đồ Uống Khác', sold_count: 64, total_revenue: 1280000, inventory: 12, max_inventory: 150, status: 'danger' }
+        ];
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(amount);
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                'completed': '<span class="badge badge-success">Hoàn Thành</span>',
+                'pending': '<span class="badge badge-info">Chuẩn Bị</span>',
+                'cancelled': '<span class="badge badge-danger">Hủy</span>'
+            };
+            return badges[status] || `<span class="badge">${status}</span>`;
+        }
+
+        function getInventoryBadge(status) {
+            const badges = {
+                'success': '<span class="badge badge-success">Bình Thường</span>',
+                'warning': '<span class="badge badge-warning">Cảnh Báo</span>',
+                'danger': '<span class="badge badge-danger">Cần Nhập</span>'
+            };
+            return badges[status] || `<span class="badge">${status}</span>`;
+        }
+
+        function loadRecentOrders() {
+            const tbody = document.querySelector('#recent-orders-table tbody');
+            
+            if (!MOCK_ORDERS || MOCK_ORDERS.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 30px;">Không có đơn hàng</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = MOCK_ORDERS.slice(0, 5).map(order => `
+                <tr>
+                    <td>#ORD${String(order.order_id).padStart(3, '0')}</td>
+                    <td>${order.customer_name || '-'}</td>
+                    <td>${getStatusBadge(order.status)}</td>
+                    <td>${formatCurrency(order.final_amount)}</td>
+                    <td><a href="#" style="color: #8B4513; text-decoration: none;">Chi Tiết</a></td>
+                </tr>
+            `).join('');
+        }
+
+        function loadTopProducts() {
+            const tbody = document.querySelector('#top-products-table tbody');
+            
+            if (!MOCK_PRODUCTS || MOCK_PRODUCTS.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px;">Không có dữ liệu</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = MOCK_PRODUCTS.map(product => `
+                <tr>
+                    <td>${product.product_name}</td>
+                    <td><span class="badge badge-info">${product.category_name}</span></td>
+                    <td>${product.sold_count}</td>
+                    <td>${formatCurrency(product.total_revenue)}</td>
+                    <td>${product.inventory}/${product.max_inventory}</td>
+                    <td>${getInventoryBadge(product.status)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateDashboard() {
+            const stats = {
+                revenue: '25.5M',
+                orders: Math.floor(Math.random() * 50) + 150,
+                customers: Math.floor(Math.random() * 50) + 200,
+                topProduct: ['Espresso', 'Cappuccino', 'Iced Coffee', 'Latte'][Math.floor(Math.random() * 4)]
+            };
+
+            document.getElementById('revenue').textContent = stats.revenue;
+            document.getElementById('orders').textContent = stats.orders;
+            document.getElementById('customers').textContent = stats.customers;
+            document.getElementById('topProduct').textContent = stats.topProduct;
+            
+            loadRecentOrders();
+            loadTopProducts();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDashboard();
+            setInterval(updateDashboard, 30000); // Auto-refresh every 30 seconds
+        });
+    </script>
+</body>
+</html>

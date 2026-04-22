@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafe Management System - Home</title>
+    <link rel="stylesheet" href="Frontend/css/style.css">
+    <style>
+        body {
+            background:linear-gradient(135deg, #8B4513 0%, #FF8C00 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .welcome-container {
+            text-align: center;
+            padding: 40px;
+            max-width: 800px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .welcome-logo {
+            font-size: 0;
+            margin-bottom: 20px;
+        }
+        
+        .welcome-logo img {
+            height: 100px;
+            width: auto;
+            display: inline-block;
+        }
+
+        .welcome-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .welcome-subtitle {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .welcome-description {
+            font-size: 16px;
+            margin-bottom: 40px;
+            opacity: 0.85;
+            line-height: 1.8;
+        }
+
+        .welcome-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .welcome-btn {
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .welcome-btn-primary {
+            background: white;
+            color: #8B4513;
+        }
+
+        .welcome-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .welcome-btn-secondary:hover {
+            background: white;
+            color: #8B4513;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .feature-text {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <div class="welcome-logo">
+            <img src="Frontend/images/Ảnh chụp màn hình 2026-04-17 105503.png" alt="HDTQ Coffee">
+        </div>
+        <h1 class="welcome-title">COFFEE HDTQ</h1>
+        <p class="welcome-subtitle">Hệ Thống Quản Lý Quán Cafe Hiện Đại</p>
+        
+        <p class="welcome-description">
+            Ứng dụng web toàn diện giúp bạn quản lý hiệu quả các hoạt động của quán cafe,
+            từ menu, đơn hàng, thanh toán đến báo cáo doanh thu.
+        </p>
+
+        <div class="welcome-buttons">
+            <a href="Frontend/pages/login.html" class="welcome-btn welcome-btn-primary">
+                🚀 Đăng Nhập Ngay
+            </a>
+            <a href="README.md" class="welcome-btn welcome-btn-secondary">
+                📚 Xem Tài Liệu
+            </a>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🍽️</div>
+                <div class="feature-title">Quản Lý Menu</div>
+                <div class="feature-text">Dễ dàng quản lý sản phẩm, danh mục và giá cả</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📦</div>
+                <div class="feature-title">Đơn Hàng</div>
+                <div class="feature-text">Tạo, quản lý và theo dõi đơn hàng nhanh chóng</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <div class="feature-title">Thanh Toán</div>
+                <div class="feature-text">Xử lý thanh toán linh hoạt với nhiều phương thức</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Báo Cáo</div>
+                <div class="feature-text">Thống kê chi tiết doanh thu và sản phẩm</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <div class="feature-title">Nhân Viên</div>
+                <div class="feature-text">Quản lý nhân viên, ca làm việc và lương</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔐</div>
+                <div class="feature-title">Bảo Mật</div>
+                <div class="feature-text">Hệ thống bảo mật với JWT authentication</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Redirect if already logged in
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (user.role === 'admin') {
+                    window.location.href = 'Frontend/pages/dashboard.html';
+                } else if (user.role === 'staff') {
+                    window.location.href = 'Frontend/pages/order.html';
+                } else {
+                    window.location.href = 'Frontend/pages/menu.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

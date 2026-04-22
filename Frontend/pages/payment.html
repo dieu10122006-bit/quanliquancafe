@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="vi" data-required-role="admin,staff">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán - Hệ Thống Quản Lý Quán Cafe</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .payment-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .payment-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #8B4513;
+        }
+
+        .payment-method {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .method-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 2px solid #EEE;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .method-option:hover {
+            border-color: #8B4513;
+            background: #F5DEB3;
+        }
+
+        .method-option input[type="radio"] {
+            margin-right: 12px;
+        }
+
+        .method-label {
+            flex: 1;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .method-icon {
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #DDD;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #8B4513;
+            box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+        }
+
+        .invoice-summary {
+            background: #F9F9F9;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        .summary-section {
+            margin-bottom: 12px;
+        }
+
+        .summary-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            color: #999;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .invoice-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .invoice-item.total {
+            border-top: 1px solid #DDD;
+            padding-top: 8px;
+            font-weight: 700;
+            color: #8B4513;
+            font-size: 16px;
+        }
+
+        .payment-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .btn-payment {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-payment.primary {
+            background: #28A745;
+            color: white;
+        }
+
+        .btn-payment.primary:hover {
+            background: #218838;
+        }
+
+        .btn-payment.secondary {
+            background: #E0E0E0;
+            color: #333;
+        }
+
+        .btn-payment.secondary:hover {
+            background: #D0D0D0;
+        }
+
+        .discount-input {
+            display: flex;
+            gap: 8px;
+        }
+
+        .discount-input input {
+            flex: 1;
+        }
+
+        .discount-input button {
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .discount-input button:hover {
+            background: #E67E00;
+        }
+
+        @media (max-width: 768px) {
+            .payment-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <img src="../images/Ảnh chụp màn hình 2026-04-17 105503.png" alt="HDTQ Coffee" class="navbar-logo-img">
+            <span>COFFEE HDTQ</span>
+        </div>
+        <div class="navbar-menu">
+            <a href="dashboard.html" class="nav-link">Trang Chủ</a>
+            <a href="menu.html" class="nav-link">Menu</a>
+            <a href="order.html" class="nav-link">Đặt Hàng</a>
+            <a href="payment.html" class="nav-link active">Thanh Toán</a>
+            <div class="navbar-user">
+                <span id="user-name">User</span>
+                <button class="btn-logout" onclick="logout()">Đăng Xuất</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="payment-container">
+        <!-- Payment Methods -->
+        <div class="payment-card">
+            <div class="card-title">💳 Phương Thức Thanh Toán</div>
+
+            <div class="payment-method">
+                <label class="method-option">
+                    <input type="radio" name="payment-method" value="cash" checked>
+                    <span class="method-icon">💵</span>
+                    <span class="method-label">Tiền Mặt</span>
+                </label>
+                <label class="method-option">
+                    <input type="radio" name="payment-method" value="card">
+                    <span class="method-icon">💳</span>
+                    <span class="method-label">Thẻ Ngân Hàng</span>
+                </label>
+                <label class="method-option">
+                    <input type="radio" name="payment-method" value="transfer">
+                    <span class="method-icon">🏦</span>
+                    <span class="method-label">Chuyển Khoản</span>
+                </label>
+                <label class="method-option">
+                    <input type="radio" name="payment-method" value="wallet">
+                    <span class="method-icon">📱</span>
+                    <span class="method-label">Ví Điện Tử</span>
+                </label>
+            </div>
+
+            <!-- Payment Info -->
+            <div style="margin-top: 24px;">
+                <div class="card-title">ℹ️ Thông Tin Thanh Toán</div>
+
+                <div class="form-group">
+                    <label>Số Hóa Đơn</label>
+                    <input type="text" placeholder="#INV-001" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Tên Khách Hàng</label>
+                    <input type="text" placeholder="Nhập tên khách hàng" id="customer-name">
+                </div>
+
+                <div class="form-group">
+                    <label>Số Điện Thoại</label>
+                    <input type="tel" placeholder="Nhập số điện thoại" id="customer-phone">
+                </div>
+
+                <div class="form-group">
+                    <label>Ghi Chú</label>
+                    <input type="text" placeholder="Ghi chú thêm (tùy chọn)" id="note">
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Summary -->
+        <div class="payment-card">
+            <div class="card-title">🧾 Hóa Đơn</div>
+
+            <div class="invoice-summary">
+                <div class="summary-section">
+                    <div class="summary-title">Đơn Hàng</div>
+                    <div class="invoice-item">
+                        <span>Cà Phê Đen x2</span>
+                        <span>50.000 VND</span>
+                    </div>
+                    <div class="invoice-item">
+                        <span>Bánh Quy x1</span>
+                        <span>15.000 VND</span>
+                    </div>
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-title">Tính Toán</div>
+                    <div class="invoice-item">
+                        <span>Tổng Tiền:</span>
+                        <span id="subtotal">65.000 VND</span>
+                    </div>
+                    <div class="discount-input" style="margin-bottom: 8px;">
+                        <input type="number" placeholder="%" id="discount-percent" min="0" max="100">
+                        <button onclick="applyDiscount()">Áp Dụng</button>
+                    </div>
+                    <div class="invoice-item">
+                        <span>Giảm Giá:</span>
+                        <span id="discount-amount">0 VND</span>
+                    </div>
+                    <div class="invoice-item total">
+                        <span>Cần Thanh Toán:</span>
+                        <span id="total-amount">65.000 VND</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Tiền Nhận</label>
+                <input type="number" placeholder="0 VND" id="payment-received" onchange="calculateChange()">
+            </div>
+
+            <div class="invoice-item" style="background: #E8F5E9; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+                <span>Tiền Thừa:</span>
+                <span id="payment-change" style="color: #28A745; font-weight: 700;">0 VND</span>
+            </div>
+
+            <div class="payment-actions">
+                <button class="btn-payment secondary" onclick="cancelPayment()">Hủy</button>
+                <button class="btn-payment primary" onclick="completePayment()">✓ Thanh Toán</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(amount);
+        }
+
+        function applyDiscount() {
+            const percent = parseFloat(document.getElementById('discount-percent').value) || 0;
+            const subtotal = 65000;
+            const discountAmount = subtotal * (percent / 100);
+            const totalAmount = subtotal - discountAmount;
+
+            document.getElementById('discount-amount').textContent = formatCurrency(discountAmount);
+            document.getElementById('total-amount').textContent = formatCurrency(totalAmount);
+        }
+
+        function calculateChange() {
+            const received = parseFloat(document.getElementById('payment-received').value) || 0;
+            const totalText = document.getElementById('total-amount').textContent;
+            const total = parseInt(totalText.replace(/[^0-9]/g, '')) || 0;
+            const change = received - total;
+
+            document.getElementById('payment-change').textContent = formatCurrency(change);
+        }
+
+        function completePayment() {
+            const customerName = document.getElementById('customer-name').value;
+            const method = document.querySelector('input[name="payment-method"]:checked').value;
+            
+            if (!customerName) {
+                alert('Vui lòng nhập tên khách hàng!');
+                return;
+            }
+
+            alert(`✓ Thanh toán thành công!\n\nKhách: ${customerName}\nPhương thức: ${method}\nSố tiền: 65.000 VND`);
+        }
+
+        function cancelPayment() {
+            if (confirm('Hủy thanh toán này?')) {
+                window.location.href = './order.html';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = './login.html';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            document.getElementById('user-name').textContent = user.name || 'User';
+        });
+    </script>
+</body>
+</html>
