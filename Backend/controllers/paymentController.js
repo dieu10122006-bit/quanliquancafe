@@ -1,13 +1,14 @@
 const pool = require('../config/database');
 
 /**
- * Get invoice by order ID
+ * LẤY HÓA ĐƠN CHI TIẾT THEO ID ĐƠN HÀNG
+ * GET /api/payments/invoice/:orderId
  */
 exports.getInvoice = async (req, res) => {
     try {
         const { orderId } = req.params;
 
-        // Get order
+        // Lấy thông tin đơn hàng
         const [orders] = await pool.query(
             'SELECT * FROM orders WHERE order_id = ?',
             [orderId]
@@ -16,11 +17,11 @@ exports.getInvoice = async (req, res) => {
         if (orders.length === 0) {
             return res.status(404).json({
                 success: false,
-                message: 'Order not found'
+                message: 'Không tìm thấy đơn hàng'
             });
         }
 
-        // Get order details
+        // Lấy chi tiết các mục trong đơn hàng
         const [details] = await pool.query(
             `SELECT od.product_id, p.product_name, od.quantity, od.unit_price, od.subtotal
              FROM order_details od
@@ -41,29 +42,32 @@ exports.getInvoice = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('GetInvoice error:', error);
+        console.error('Lỗi lấy hóa đơn:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Lỗi máy chủ nội bộ'
         });
     }
 };
 
 /**
- * Process payment
+ * XỬ LÝ THANH TOÁN
+ * POST /api/payments/process
+ * Body: { order_id, payment_method, amount_received, notes }
  */
 exports.processPayment = async (req, res) => {
     try {
         const { order_id, payment_method, amount_received, notes } = req.body;
 
+        // Kiểm tra thông tin bắt buộc
         if (!order_id || !payment_method) {
             return res.status(400).json({
                 success: false,
-                message: 'Order ID and payment method are required'
+                message: 'ID đơn hàng và phương thức thanh toán là bắt buộc'
             });
         }
 
-        // Check order exists
+        // Kiểm tra đơn hàng có tồn tại
         const [orders] = await pool.query(
             'SELECT * FROM orders WHERE order_id = ?',
             [order_id]
@@ -72,18 +76,18 @@ exports.processPayment = async (req, res) => {
         if (orders.length === 0) {
             return res.status(404).json({
                 success: false,
-                message: 'Order not found'
+                message: 'Không tìm thấy đơn hàng'
             });
         }
 
-        // Create invoice record
+        // Tạo bản ghi hóa đơn
         await pool.query(
             `INSERT INTO invoices (order_id, invoice_date, total_amount, paid_amount, payment_method, notes, status)
              VALUES (?, NOW(), ?, ?, ?, ?, ?)`,
             [order_id, orders[0].final_amount, amount_received, payment_method, notes, 'completed']
         );
 
-        // Update order status
+        // Cập nhật trạng thái đơn hàng
         await pool.query(
             'UPDATE orders SET status = ? WHERE order_id = ?',
             ['completed', order_id]
@@ -93,7 +97,7 @@ exports.processPayment = async (req, res) => {
 
         res.json({
             success: true,
-            message: 'Payment processed successfully',
+            message: 'Thanh toán được xử lý thành công',
             data: {
                 order_id,
                 total_amount: orders[0].final_amount,
@@ -103,16 +107,17 @@ exports.processPayment = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('ProcessPayment error:', error);
+        console.error('Lỗi xử lý thanh toán:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Lỗi máy chủ nội bộ'
         });
     }
 };
 
 /**
- * Get all invoices
+ * LẤY DANH SÁCH TẤT CẢ HÓA ĐƠN
+ * GET /api/payments/invoices
  */
 exports.getAllInvoices = async (req, res) => {
     try {
@@ -130,10 +135,10 @@ exports.getAllInvoices = async (req, res) => {
             invoices
         });
     } catch (error) {
-        console.error('GetAllInvoices error:', error);
+        console.error('Lỗi lấy danh sách hóa đơn:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Lỗi máy chủ nội bộ'
         });
     }
 };

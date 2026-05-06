@@ -1,7 +1,8 @@
 const pool = require('../config/database');
 
 /**
- * Get all products
+ * LẤY DANH SÁCH TẤT CẢ SẢN PHẨM
+ * GET /api/products
  */
 exports.getAllProducts = async (req, res) => {
     try {
@@ -18,16 +19,17 @@ exports.getAllProducts = async (req, res) => {
             products
         });
     } catch (error) {
-        console.error('GetAllProducts error:', error);
+        console.error('Lỗi lấy danh sách sản phẩm:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Lỗi máy chủ nội bộ'
         });
     }
 };
 
 /**
- * Get product by ID
+ * LẤY THÔNG TIN SẢN PHẨM THEO ID
+ * GET /api/products/:id
  */
 exports.getProductById = async (req, res) => {
     try {
@@ -45,7 +47,7 @@ exports.getProductById = async (req, res) => {
         if (products.length === 0) {
             return res.status(404).json({
                 success: false,
-                message: 'Product not found'
+                message: 'Không tìm thấy sản phẩm'
             });
         }
 
@@ -54,16 +56,17 @@ exports.getProductById = async (req, res) => {
             product: products[0]
         });
     } catch (error) {
-        console.error('GetProductById error:', error);
+        console.error('Lỗi lấy thông tin sản phẩm:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Lỗi máy chủ nội bộ'
         });
     }
 };
 
 /**
- * Get products by category
+ * LẤY SẢN PHẨM THEO DANH MỤC
+ * GET /api/products/category/:categoryId
  */
 exports.getProductsByCategory = async (req, res) => {
     try {
@@ -84,25 +87,28 @@ exports.getProductsByCategory = async (req, res) => {
             products
         });
     } catch (error) {
-        console.error('GetProductsByCategory error:', error);
+        console.error('Lỗi lấy sản phẩm theo danh mục:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Lỗi máy chủ nội bộ'
         });
     }
 };
 
 /**
- * Create product (Admin only)
+ * TẠO SẢN PHẨM MỚI (Admin)
+ * POST /api/products
+ * Body: { product_name, category_id, price, description }
  */
 exports.createProduct = async (req, res) => {
     try {
         const { product_name, category_id, price, description } = req.body;
 
+        // Kiểm tra trường bắt buộc
         if (!product_name || !category_id || !price) {
             return res.status(400).json({
                 success: false,
-                message: 'Missing required fields'
+                message: 'Các trường bắt buộc không được để trống'
             });
         }
 
@@ -113,19 +119,21 @@ exports.createProduct = async (req, res) => {
 
         res.status(201).json({
             success: true,
-            message: 'Product created successfully'
+            message: 'Sản phẩm được tạo thành công'
         });
     } catch (error) {
-        console.error('CreateProduct error:', error);
+        console.error('Lỗi tạo sản phẩm:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Lỗi máy chủ nội bộ'
         });
     }
 };
 
 /**
- * Update product (Admin only)
+ * CẬP NHẬT SẢN PHẨM (Admin)
+ * PUT /api/products/:id
+ * Body: { product_name, category_id, price, description, status }
  */
 exports.updateProduct = async (req, res) => {
     try {
@@ -139,19 +147,20 @@ exports.updateProduct = async (req, res) => {
 
         res.json({
             success: true,
-            message: 'Product updated successfully'
+            message: 'Sản phẩm được cập nhật thành công'
         });
     } catch (error) {
-        console.error('UpdateProduct error:', error);
+        console.error('Lỗi cập nhật sản phẩm:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Lỗi máy chủ nội bộ'
         });
     }
 };
 
 /**
- * Delete product (Admin only)
+ * XÓA SẢN PHẨM (Admin)
+ * DELETE /api/products/:id
  */
 exports.deleteProduct = async (req, res) => {
     try {
@@ -161,13 +170,13 @@ exports.deleteProduct = async (req, res) => {
 
         res.json({
             success: true,
-            message: 'Product deleted successfully'
+            message: 'Sản phẩm được xóa thành công'
         });
     } catch (error) {
-        console.error('DeleteProduct error:', error);
+        console.error('Lỗi xóa sản phẩm:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Lỗi máy chủ nội bộ'
         });
     }
 };

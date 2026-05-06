@@ -1,7 +1,8 @@
 const pool = require('../config/database');
 
 /**
- * Get revenue report
+ * LẤY BÁO CÁO DOANH THU
+ * GET /api/reports/revenue?fromDate=YYYY-MM-DD&toDate=YYYY-MM-DD
  */
 exports.getRevenue = async (req, res) => {
     try {
@@ -10,6 +11,7 @@ exports.getRevenue = async (req, res) => {
         let query = 'SELECT SUM(final_amount) as totalRevenue, COUNT(*) as ordersCount, COUNT(DISTINCT customer_name) as customersCount FROM orders WHERE status = "completed"';
         const params = [];
 
+        // Lọc theo khoảng thời gian nếu có
         if (fromDate && toDate) {
             query += ' AND DATE(order_date) BETWEEN ? AND ?';
             params.push(fromDate, toDate);
@@ -26,16 +28,17 @@ exports.getRevenue = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('GetRevenue error:', error);
+        console.error('Lỗi lấy báo cáo doanh thu:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Lỗi máy chủ nội bộ'
         });
     }
 };
 
 /**
- * Get product report
+ * LẤY BÁO CÁO SẢN PHẨM (Top 10 sản phẩm bán chạy)
+ * GET /api/reports/products?fromDate=YYYY-MM-DD&toDate=YYYY-MM-DD
  */
 exports.getProductReport = async (req, res) => {
     try {
@@ -51,6 +54,7 @@ exports.getProductReport = async (req, res) => {
         `;
         const params = [];
 
+        // Lọc theo khoảng thời gian nếu có
         if (fromDate && toDate) {
             query += ` AND DATE(od.order_date) BETWEEN ? AND ?`;
             params.push(fromDate, toDate);
@@ -65,16 +69,17 @@ exports.getProductReport = async (req, res) => {
             products
         });
     } catch (error) {
-        console.error('GetProductReport error:', error);
+        console.error('Lỗi lấy báo cáo sản phẩm:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Lỗi máy chủ nội bộ'
         });
     }
 };
 
 /**
- * Get employee report
+ * LẤY BÁO CÁO NHÂN VIÊN
+ * GET /api/reports/employees
  */
 exports.getEmployeeReport = async (req, res) => {
     try {
@@ -87,16 +92,17 @@ exports.getEmployeeReport = async (req, res) => {
             employees
         });
     } catch (error) {
-        console.error('GetEmployeeReport error:', error);
+        console.error('Lỗi lấy báo cáo nhân viên:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Lỗi máy chủ nội bộ'
         });
     }
 };
 
 /**
- * Get daily revenue
+ * LẤY BÁO CÁO DOANH THU HÀNG NGÀY
+ * GET /api/reports/daily-revenue?fromDate=YYYY-MM-DD&toDate=YYYY-MM-DD
  */
 exports.getDailyRevenue = async (req, res) => {
     try {
@@ -113,6 +119,7 @@ exports.getDailyRevenue = async (req, res) => {
         `;
         const params = [];
 
+        // Lọc theo khoảng thời gian nếu có
         if (fromDate && toDate) {
             query += ` AND DATE(order_date) BETWEEN ? AND ?`;
             params.push(fromDate, toDate);
@@ -127,10 +134,10 @@ exports.getDailyRevenue = async (req, res) => {
             data
         });
     } catch (error) {
-        console.error('GetDailyRevenue error:', error);
+        console.error('Lỗi lấy báo cáo doanh thu hàng ngày:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Lỗi máy chủ nội bộ'
         });
     }
 };

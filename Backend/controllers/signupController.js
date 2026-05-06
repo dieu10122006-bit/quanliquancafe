@@ -3,13 +3,15 @@ const bcrypt = require('bcrypt');
 const pool = require('../config/database');
 
 /**
- * Register/Signup new user
+ * ĐẠT NHẬP / ĐĂNG KÝ NGƯỜI DÙNG MỚI
+ * POST /api/auth/signup
+ * Body: { username, email, password, fullName, phone, role }
  */
 exports.signup = async (req, res) => {
     try {
         const { username, email, password, fullName, phone, role } = req.body;
 
-        // ========== VALIDATION ==========
+        // ========== KIỂM ĐỊNH DỮ LIỆU ==========
         if (!username || !email || !password || !fullName || !role) {
             return res.status(400).json({
                 success: false,
@@ -17,7 +19,7 @@ exports.signup = async (req, res) => {
             });
         }
 
-        // Validate username format (3-20 characters, alphanumeric and underscore)
+        // Kiểm tra định dạng tên đăng nhập (3-20 ký tự, chữ số và dấu gạch dưới)
         if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
             return res.status(400).json({
                 success: false,
@@ -25,7 +27,7 @@ exports.signup = async (req, res) => {
             });
         }
 
-        // Validate email format
+        // Kiểm tra định dạng email
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             return res.status(400).json({
                 success: false,
@@ -33,7 +35,7 @@ exports.signup = async (req, res) => {
             });
         }
 
-        // Validate password strength
+        // Kiểm tra độ mạnh mật khẩu (ít nhất 6 ký tự)
         if (password.length < 6) {
             return res.status(400).json({
                 success: false,
@@ -41,7 +43,7 @@ exports.signup = async (req, res) => {
             });
         }
 
-        // Validate password has uppercase and number
+        // Kiểm tra mật khẩu có chứa chữ hoa và chữ số
         if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
             return res.status(400).json({
                 success: false,
@@ -49,7 +51,7 @@ exports.signup = async (req, res) => {
             });
         }
 
-        // Validate full name
+        // Kiểm tra họ và tên (ít nhất 3 ký tự)
         if (fullName.trim().length < 3) {
             return res.status(400).json({
                 success: false,
@@ -57,7 +59,7 @@ exports.signup = async (req, res) => {
             });
         }
 
-        // Validate phone if provided
+        // Kiểm tra số điện thoại nếu có
         if (phone && !/^[0-9]{10,11}$/.test(phone.replace(/[-\s]/g, ''))) {
             return res.status(400).json({
                 success: false,
@@ -65,7 +67,7 @@ exports.signup = async (req, res) => {
             });
         }
 
-        // Validate role
+        // Kiểm tra vai trò
         const validRoles = ['admin', 'staff', 'customer'];
         if (!validRoles.includes(role)) {
             return res.status(400).json({
@@ -74,7 +76,7 @@ exports.signup = async (req, res) => {
             });
         }
 
-        // ========== CHECK DUPLICATE ==========
+        // ========== KIỂM TRA TRÙNG LẶP ==========
         const [existingUsername] = await pool.query(
             'SELECT username FROM users WHERE username = ?',
             [username]
@@ -99,9 +101,9 @@ exports.signup = async (req, res) => {
             });
         }
 
-        // ========== CREATE USER ==========
-        // Note: In production, use bcrypt to hash password
-        // For now using plain text as per existing system
+        // ========== TẠO NGƯỜI DÙNG ==========
+        // Lưu ý: Trong production, sử dụng bcrypt để mã hóa mật khẩu
+        // Hiện tại sử dụng plain text theo hệ thống hiện có
         // const hashedPassword = await bcrypt.hash(password, 10);
 
         const [result] = await pool.query(
@@ -113,7 +115,7 @@ exports.signup = async (req, res) => {
 
         const userId = result.insertId;
 
-        // ========== CREATE JWT TOKEN ==========
+        // ========== TẠO JWT TOKEN ==========
         const token = jwt.sign(
             {
                 id: userId,
@@ -125,7 +127,7 @@ exports.signup = async (req, res) => {
             { expiresIn: process.env.JWT_EXPIRE || '7d' }
         );
 
-        // ========== SEND RESPONSE ==========
+        // ========== TRẢ VỀ KẾT QUẢ ==========
         res.status(201).json({
             success: true,
             message: 'Đăng ký thành công',
@@ -141,7 +143,7 @@ exports.signup = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Signup error:', error);
+        console.error('Lỗi đăng ký:', error);
         res.status(500).json({
             success: false,
             message: 'Lỗi hệ thống, vui lòng thử lại sau'
@@ -150,7 +152,8 @@ exports.signup = async (req, res) => {
 };
 
 /**
- * Check username availability
+ * KIỂM TRA TÊN ĐĂNG NHẬP CÓ SẴN
+ * GET /api/auth/check-username?username=value
  */
 exports.checkUsername = async (req, res) => {
     try {
@@ -159,7 +162,7 @@ exports.checkUsername = async (req, res) => {
         if (!username) {
             return res.status(400).json({
                 success: false,
-                message: 'Username is required'
+                message: 'Tên đăng nhập là bắt buộc'
             });
         }
 
@@ -174,16 +177,17 @@ exports.checkUsername = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('CheckUsername error:', error);
+        console.error('Lỗi kiểm tra tên đăng nhập:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Lỗi máy chủ nội bộ'
         });
     }
 };
 
 /**
- * Check email availability
+ * KIỂM TRA EMAIL CÓ SẴN
+ * GET /api/auth/check-email?email=value
  */
 exports.checkEmail = async (req, res) => {
     try {
@@ -192,7 +196,7 @@ exports.checkEmail = async (req, res) => {
         if (!email) {
             return res.status(400).json({
                 success: false,
-                message: 'Email is required'
+                message: 'Email là bắt buộc'
             });
         }
 
@@ -207,10 +211,10 @@ exports.checkEmail = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('CheckEmail error:', error);
+        console.error('Lỗi kiểm tra email:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Lỗi máy chủ nội bộ'
         });
     }
 };
