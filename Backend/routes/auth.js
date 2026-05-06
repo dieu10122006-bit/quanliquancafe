@@ -1,15 +1,19 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const authController = require('../controllers/authController');
-const signupController = require('../controllers/signupController');
-const forgotPasswordController = require('../controllers/forgotPasswordController');
-const { verifyToken } = require('../middleware/auth');
+
+// Import các controller xử lý logic
+const authController = require("../controllers/authController"); // login, lấy thông tin user
+const signupController = require("../controllers/signupController"); // đăng ký
+const forgotPasswordController = require("../controllers/forgotPasswordController"); // quên mật khẩu
+
+// Import middleware kiểm tra token (đăng nhập)
+const { verifyToken } = require("../middleware/auth");
 
 /**
  * POST /api/auth/login
- * Login with username and password
+ * Đăng nhập bằng username + password
  */
-router.post('/login', authController.login);
+router.post("/login", authController.login);
 
 /**
  * ========== SIGNUP / REGISTRATION ==========
@@ -17,27 +21,28 @@ router.post('/login', authController.login);
 
 /**
  * POST /api/auth/signup
- * Register new user account
+ * Tạo tài khoản mới
  */
-router.post('/signup', signupController.signup);
+router.post("/signup", signupController.signup);
 
 /**
  * GET /api/auth/check-username
- * Check if username is available
+ * Kiểm tra username đã tồn tại chưa
  */
-router.get('/check-username', signupController.checkUsername);
+router.get("/check-username", signupController.checkUsername);
 
 /**
  * GET /api/auth/check-email
- * Check if email is available
+ * Kiểm tra email đã tồn tại chưa
  */
-router.get('/check-email', signupController.checkEmail);
+router.get("/check-email", signupController.checkEmail);
 
 /**
  * GET /api/auth/me
- * Get current user info (requires token)
+ * Lấy thông tin user hiện tại
+ * → cần đăng nhập (có token)
  */
-router.get('/me', verifyToken, authController.getCurrentUser);
+router.get("/me", verifyToken, authController.getCurrentUser);
 
 /**
  * ========== FORGOT PASSWORD - 2-LAYER SECURITY ==========
@@ -45,29 +50,30 @@ router.get('/me', verifyToken, authController.getCurrentUser);
 
 /**
  * POST /api/auth/forgot-password
- * Step 1: Request password reset
- * Send OTP to email
+ * Bước 1: Yêu cầu đặt lại mật khẩu
+ * → gửi OTP về email
  */
-router.post('/forgot-password', forgotPasswordController.forgotPassword);
+router.post("/forgot-password", forgotPasswordController.forgotPassword);
 
 /**
  * POST /api/auth/verify-otp
- * Step 2: Verify OTP
- * User enters OTP received in email
+ * Bước 2: Xác nhận OTP
+ * → user nhập mã OTP nhận được
  */
-router.post('/verify-otp', forgotPasswordController.verifyOTP);
+router.post("/verify-otp", forgotPasswordController.verifyOTP);
 
 /**
  * POST /api/auth/resend-otp
- * Resend OTP to email
+ * Gửi lại OTP nếu chưa nhận được
  */
-router.post('/resend-otp', forgotPasswordController.resendOTP);
+router.post("/resend-otp", forgotPasswordController.resendOTP);
 
 /**
  * POST /api/auth/reset-password
- * Step 3: Reset password
- * User sets new password after OTP verification
+ * Bước 3: Đặt lại mật khẩu
+ * → sau khi OTP đúng thì đổi mật khẩu mới
  */
-router.post('/reset-password', forgotPasswordController.resetPassword);
+router.post("/reset-password", forgotPasswordController.resetPassword);
 
+// Export router để dùng ở app chính
 module.exports = router;

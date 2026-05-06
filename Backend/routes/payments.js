@@ -1,24 +1,45 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const paymentController = require('../controllers/paymentController');
-const { verifyToken, checkRole } = require('../middleware/auth');
+
+// Import controller xử lý logic thanh toán
+const paymentController = require("../controllers/paymentController");
+
+// Import middleware xác thực và phân quyền
+const { verifyToken, checkRole } = require("../middleware/auth");
 
 /**
  * GET /api/payments/invoices
- * Get all invoices
+ * Lấy danh sách tất cả hóa đơn
+ * → phải đăng nhập
+ * → chỉ admin hoặc staff mới được xem
  */
-router.get('/invoices', verifyToken, checkRole(['admin', 'staff']), paymentController.getAllInvoices);
+router.get(
+  "/invoices",
+  verifyToken,
+  checkRole(["admin", "staff"]),
+  paymentController.getAllInvoices,
+);
 
 /**
  * GET /api/payments/:orderId
- * Get invoice by order ID
+ * Lấy hóa đơn theo ID đơn hàng
+ * → phải đăng nhập
+ * → tất cả user đã login đều có thể gọi (chi tiết quyền xử lý trong controller)
  */
-router.get('/:orderId', verifyToken, paymentController.getInvoice);
+router.get("/:orderId", verifyToken, paymentController.getInvoice);
 
 /**
  * POST /api/payments/process
- * Process payment
+ * Xử lý thanh toán cho đơn hàng
+ * → phải đăng nhập
+ * → chỉ admin hoặc staff được phép xử lý
  */
-router.post('/process', verifyToken, checkRole(['admin', 'staff']), paymentController.processPayment);
+router.post(
+  "/process",
+  verifyToken,
+  checkRole(["admin", "staff"]),
+  paymentController.processPayment,
+);
 
+// Export router để dùng trong app chính
 module.exports = router;

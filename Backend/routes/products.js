@@ -1,42 +1,71 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const productController = require('../controllers/productController');
-const { verifyToken, checkRole } = require('../middleware/auth');
+
+// Import controller xử lý logic sản phẩm
+const productController = require("../controllers/productController");
+
+// Import middleware xác thực và phân quyền
+const { verifyToken, checkRole } = require("../middleware/auth");
 
 /**
  * GET /api/products
- * Get all products
+ * Lấy danh sách tất cả sản phẩm
+ * → ai cũng xem được (không cần đăng nhập)
  */
-router.get('/', productController.getAllProducts);
+router.get("/", productController.getAllProducts);
 
 /**
  * GET /api/products/:id
- * Get product by ID
+ * Lấy chi tiết 1 sản phẩm theo ID
+ * → ai cũng xem được
  */
-router.get('/:id', productController.getProductById);
+router.get("/:id", productController.getProductById);
 
 /**
  * GET /api/products/category/:categoryId
- * Get products by category
+ * Lấy danh sách sản phẩm theo danh mục
+ * → ai cũng xem được
  */
-router.get('/category/:categoryId', productController.getProductsByCategory);
+router.get("/category/:categoryId", productController.getProductsByCategory);
 
 /**
  * POST /api/products (Admin only)
- * Create new product
+ * Tạo sản phẩm mới
+ * → phải đăng nhập
+ * → chỉ admin được phép
  */
-router.post('/', verifyToken, checkRole(['admin']), productController.createProduct);
+router.post(
+  "/",
+  verifyToken,
+  checkRole(["admin"]),
+  productController.createProduct,
+);
 
 /**
  * PUT /api/products/:id (Admin only)
- * Update product
+ * Cập nhật sản phẩm
+ * → phải đăng nhập
+ * → chỉ admin được phép
  */
-router.put('/:id', verifyToken, checkRole(['admin']), productController.updateProduct);
+router.put(
+  "/:id",
+  verifyToken,
+  checkRole(["admin"]),
+  productController.updateProduct,
+);
 
 /**
  * DELETE /api/products/:id (Admin only)
- * Delete product
+ * Xóa sản phẩm
+ * → phải đăng nhập
+ * → chỉ admin được phép
  */
-router.delete('/:id', verifyToken, checkRole(['admin']), productController.deleteProduct);
+router.delete(
+  "/:id",
+  verifyToken,
+  checkRole(["admin"]),
+  productController.deleteProduct,
+);
 
+// Export router để dùng trong app chính
 module.exports = router;
