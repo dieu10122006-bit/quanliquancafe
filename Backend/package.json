@@ -1,33 +1,18 @@
 {
-  "name": "cafe-management-system",
-  "version": "1.0.0",
-  "description": "Hệ Thống Quản Lý Quán Cafe",
-  "main": "app.js",
+  "name": "cafe-management-system",        // Tên project
+  "version": "1.0.0",                      // Version
+  "main": "app.js",                        // File chính
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
-    "test": "mocha tests.js --timeout 10000"
+    "start": "node app.js",               // Chạy server
+    "dev": "nodemon app.js"               // Chạy dev auto reload
   },
-  "keywords": [
-    "cafe",
-    "management",
-    "system"
-  ],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
-    "bcrypt": "^5.1.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.0",
-    "mysql2": "^3.6.0",
-    "nodemailer": "^6.10.1"
-  },
-  "devDependencies": {
-    "axios": "^1.4.0",
-    "chai": "^4.3.7",
-    "mocha": "^10.0.0",
-    "nodemon": "^2.0.20"
+    "express": "^4.18.2",                 // Framework backend
+    "mysql2": "^3.6.0",                   // Kết nối MySQL
+    "dotenv": "^16.0.3",                  // Biến môi trường
+    "cors": "^2.8.5",                     // Cho phép gọi API
+    "bcrypt": "^5.1.0",                   // Hash password
+    "jsonwebtoken": "^9.0.0",             // JWT auth
+    "nodemailer": "^6.10.1"               // Gửi email
   }
 }
