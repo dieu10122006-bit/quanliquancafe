@@ -1,0 +1,24 @@
+{
+  "name": "quanliquancafe",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Coffee shop management system with frontend, backend, database and documentation.",
+  "main": "src/backend/app.js",
+  "scripts": {
+    "start": "node src/backend/app.js",
+    "dev": "nodemon src/backend/app.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mysql2": "^3.6.0",
+    "nodemailer": "^6.10.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "license": "MIT"
+}

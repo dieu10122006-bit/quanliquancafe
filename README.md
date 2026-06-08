@@ -17,64 +17,59 @@ Hệ thống Quản Lý Quán Cafe là một ứng dụng web toàn diện giúp
 ## 📁 CẤU TRÚC DỰ ÁN
 
 ```
-CafeManagementSystem/
+quanliquancafe/
 │
-├── 📁 Documentation/              # Tài liệu dự án
-│   ├── 01_PROJECT_PLAN.md        # Kế hoạch dự án
-│   ├── 02_REQUIREMENTS.md        # Phân tích yêu cầu
-│   ├── 03_DATABASE_DESIGN.md     # Thiết kế database
-│   ├── 04_SYSTEM_ARCHITECTURE.md # Kiến trúc hệ thống
-│   └── 05_UI_MOCKUPS.md          # Mockup giao diện
+├── 📁 docs/                      # Tài liệu dự án và hướng dẫn
+│   ├── 01_PROJECT_PLAN.md
+│   ├── 02_REQUIREMENTS.md
+│   ├── 03_DATABASE_DESIGN.md
+│   ├── 04_SYSTEM_ARCHITECTURE.md
+│   ├── 05_UI_MOCKUPS.md
+│   ├── 06_IMPLEMENTATION_GUIDE.md
+│   ├── DEPLOYMENT_GUIDE.md
+│   ├── FINAL_REPORT.md
+│   └── 📁 guides/                # Tài liệu hướng dẫn riêng
+│       ├── action-plan-forgot-password.md
+│       ├── forgot-password-complete-guide.md
+│       ├── completion-summary.md
+│       ├── file-index.md
+│       ├── forgot-password-file-index.md
+│       ├── forgot-password-verification.md
+│       ├── project-summary.md
+│       ├── quick-start-registration.md
+│       ├── ready-to-use.md
+│       ├── registration-complete.md
+│       ├── registration-summary.md
+│       └── setup-forgot-password.md
 │
-├── 📁 Database/                   # Database scripts
-│   ├── schema.sql                 # Tạo bảng & triggers
-│   └── data.sql                   # Dữ liệu mặc định
+├── 📁 src/
+│   ├── 📁 backend/                # Node.js backend
+│   │   ├── app.js
+│   │   ├── package.json
+│   │   ├── package-lock.json
+│   │   ├── .env
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── middleware/
+│   │   ├── routes/
+│   │   └── services/
+│   ├── 📁 frontend/               # Frontend files
+│   │   ├── index.html
+│   │   ├── css/
+│   │   ├── js/
+│   │   ├── pages/
+│   │   └── images/
+│   └── 📁 database/               # Database scripts
+│       ├── schema.sql
+│       └── data.sql
 │
-├── 📁 Frontend/                   # Frontend files
-│   ├── 📁 css/
-│   │   └── style.css              # Main stylesheet
-│   ├── 📁 js/
-│   │   ├── api.js                 # API wrapper
-│   │   ├── utils.js               # Utility functions
-│   │   ├── auth.js                # Authentication
-│   │   ├── menu.js                # Menu functions
-│   │   ├── order.js               # Order functions
-│   │   ├── payment.js             # Payment functions
-│   │   └── reports.js             # Reports functions
-│   ├── 📁 pages/
-│   │   ├── login.html             # Login page ✅
-│   │   ├── dashboard.html         # Dashboard (Admin)
-│   │   ├── menu.html              # Menu management
-│   │   ├── order.html             # Create order
-│   │   ├── payment.html           # Payment page
-│   │   ├── employees.html         # Employee management
-│   │   ├── reports.html           # Reports & analytics
-│   │   └── settings.html          # Settings
-│   └── 📁 images/                 # Product images
+├── 📁 tests/                     # Testing hướng dẫn & case
+│   └── TESTING_GUIDE.md
 │
-├── 📁 Backend/                    # Backend files (Node.js)
-│   ├── 📁 config/
-│   │   └── db.js                  # Database connection
-│   ├── 📁 routes/
-│   │   ├── auth.js
-│   │   ├── products.js
-│   │   ├── orders.js
-│   │   ├── payments.js
-│   │   ├── employees.js
-│   │   └── reports.js
-│   ├── 📁 controllers/
-│   ├── 📁 models/
-│   ├── 📁 middleware/
-│   ├── server.js
-│   ├── package.json
-│   └── .env
-│
-├── 📁 Testing/                    # Testing files
-│   ├── test_cases.md              # Test cases
-│   ├── test_results.md            # Test results
-│   └── bug_reports.md             # Bug reports
-│
-└── README.md                       # This file
+├── .gitignore
+├── LICENSE
+├── package.json
+└── README.md                     # This file
 ```
 
 ---
